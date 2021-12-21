@@ -1,16 +1,24 @@
-import React from 'react';
+import React, { useState } from "react";
+import Picker from "./ui/Picker";
+import Schedule from "./ui/Schedule";
+
+import "./App.scss";
 
 function App() {
+  const [shows, setShows] = useState<string[]>([
+    "star%20trek%20discovery",
+    "the%20expanse",
+    "the%20witcher",
+    "hawkeye",
+    "battlebots",
+  ]);
   return (
-    <div style={{ textAlign: 'center' }}>
-      <header>
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
+    <div className="ts-app ts-theme">
+      <header className="ts-app__header">
+        <h1>TVSpy</h1>
       </header>
+      <Picker shows={shows} onSetShows={setShows} />
+      <Schedule shows={shows} />
     </div>
   );
 }

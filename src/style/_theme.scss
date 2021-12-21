@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;700;900&display=swap");
+
+.ts-theme {
+  --color-red: #ef476f;
+  --color-yellow: #ffd166;
+  --color-green: #06d6a0;
+  --color-white: #ffffff;
+  --color-blue-900: #c4eaf7;
+  --color-blue-800: #65d9ff;
+  --color-blue-600: #00a3d9;
+  --color-blue-500: #118ab2;
+  --color-blue-400: #166580;
+  --color-blue-300: #165164;
+  --color-blue-200: #163c48;
+  --color-blue-100: #172c33;
+  --color-blue-50: #131e22;
+  --color-black: #000000;
+
+  --theme-bg: var(--color-blue-50);
+  --theme-text: var(--color-blue-900);
+  --theme-font: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+@mixin typo-base {
+  font-family: var(--theme-font);
+}

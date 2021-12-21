@@ -1,0 +1,31 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_d_2_10)">
+<rect x="16" y="16" width="224" height="160" rx="36" fill="#B1F5FA"/>
+<rect x="16" y="16" width="224" height="160" rx="36" fill="url(#paint0_linear_2_10)" style="mix-blend-mode:overlay"/>
+<rect x="24" y="24" width="208" height="144" rx="28" stroke="black" stroke-width="16"/>
+</g>
+<path d="M80 88L112 104" stroke="black" stroke-width="16" stroke-linecap="round" stroke-linejoin="bevel"/>
+<circle cx="160" cy="96" r="16" fill="black"/>
+<mask id="mask0_2_10" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="190" width="256" height="64">
+<rect y="190" width="256" height="64" fill="#C4C4C4"/>
+</mask>
+<g mask="url(#mask0_2_10)">
+<path d="M80.9936 218L80.9965 218L80.9904 218H36C31.5817 218 28 221.582 28 226V234C28 238.418 31.5817 242 36 242H221C225.418 242 229 238.418 229 234V226C229 221.582 225.418 218 221 218H176.008L176.006 218L176.003 218L176 218L175.978 218C175.943 217.999 175.883 217.998 175.798 217.995C175.628 217.99 175.36 217.978 175.008 217.955C174.304 217.907 173.269 217.809 172.008 217.611C169.471 217.213 166.108 216.42 162.714 214.865C156.08 211.826 149.282 205.914 148.161 193.651C147.796 189.653 144.53 186 140 186H116C111.472 186 108.198 189.652 107.843 193.662C106.752 205.983 100.14 211.876 93.7744 214.886C90.5069 216.431 87.2698 217.218 84.828 217.614C83.615 217.811 82.6195 217.908 81.9434 217.955C81.6059 217.979 81.3497 217.99 81.1878 217.995C81.1069 217.998 81.0497 217.999 81.0178 218L80.9936 218ZM80.9896 218L80.9892 218C80.9877 218 80.9878 218 80.9896 218Z" fill="black" stroke="white" stroke-width="8" stroke-linejoin="round"/>
+</g>
+<defs>
+<filter id="filter0_d_2_10" x="8" y="8" width="240" height="176" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="8" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_2_10"/>
+<feOffset/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2_10"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2_10" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_2_10" x1="240" y1="176" x2="-9.76892" y2="10.6187" gradientUnits="userSpaceOnUse">
+<stop/>
+<stop offset="1" stop-color="white"/>
+</linearGradient>
+</defs>
+</svg>
