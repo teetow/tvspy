@@ -1,0 +1,43 @@
+@use "../style/theme";
+
+.ts-schedule {
+  display: grid;
+  gap: 3em;
+}
+
+.ts-schedule__showlist {
+  display: grid;
+  gap: 0.5em;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ts-schedule__show {
+  align-items: center;
+  cursor: pointer;
+  display: grid;
+  gap: 0.5em;
+  grid-template-areas: "image name remove";
+  grid-template-columns: 2em auto 1fr;
+}
+
+.ts-schedule__showimage {
+  grid-area: image;
+  background-size: cover;
+  height: 100%;
+  border-radius: 0.25em;
+}
+
+.ts-schedule__showname {
+  grid-area: name;
+}
+
+.ts-schedule__showclear {
+  color: var(--color-blue-500);
+  font-size: 0.8em;
+  grid-area: remove;
+  &:hover {
+    text-decoration: underline;
+  }
+}

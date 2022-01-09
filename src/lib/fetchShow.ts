@@ -78,6 +78,7 @@ export type ScheduledShow = {
   url: string;
   prevEpDate?: string;
   nextEpDate?: string;
+  image?: string;
 };
 
 const parseShow = async (hit: Hit) => {
@@ -98,13 +99,18 @@ const parseShow = async (hit: Hit) => {
     url: hit.show._links.self.href,
     prevEpDate: prevEp.airdate,
     nextEpDate: nextEp ? nextEp.airdate : null,
+    image: hit.show.image.medium,
   } as ScheduledShow;
 };
 
+export const getShows = async (query: string) => {
+  return (await fetchJson<Hit[]>(
+    `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`
+  )) as Promise<Hit[]>;
+};
+
 export const getShow = async (query: string) => {
-  const showData = await fetchJson<Hit[]>(
-    `https://api.tvmaze.com/search/shows?q=${query}`
-  );
+  const showData = await getShows(query);
 
   return parseShow(showData[0]);
 };
