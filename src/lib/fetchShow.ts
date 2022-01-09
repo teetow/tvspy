@@ -60,7 +60,51 @@ export type Ep = {
 export const fetchJson = async <T>(query: string) => {
   return await fetch(query)
     .then((res) => {
-      if (res.status === 200) return res.json();
+      if (res.status === 200) {
+        return res.json();
+      }
     })
-    .then((res) => res as T);
+    .then((res) => res as T)
+    .catch((error) => {
+      console.log("error in fetchJson: ", error);
+      return error;
+    });
+};
+
+export type ScheduledShow = {
+  name: string;
+  id: number;
+  day: string;
+  url: string;
+  prevEpDate?: string;
+  nextEpDate?: string;
+};
+
+const parseShow = async (hit: Hit) => {
+  const prevEp = await fetchJson<Ep>(hit.show._links.previousepisode.href);
+  let nextEp;
+  if (prevEp) {
+    nextEp = await fetchJson<Ep>(
+      `https://api.tvmaze.com/shows/${hit.show.id}/episodebynumber?season=${
+        prevEp.season
+      }&number=${prevEp.number + 1}`
+    );
+  }
+
+  return {
+    name: hit.show.name,
+    id: hit.show.id,
+    day: hit.show.schedule.days[0],
+    url: hit.show._links.self.href,
+    prevEpDate: prevEp.airdate,
+    nextEpDate: nextEp ? nextEp.airdate : null,
+  } as ScheduledShow;
+};
+
+export const getShow = async (query: string) => {
+  const showData = await fetchJson<Hit[]>(
+    `https://api.tvmaze.com/search/shows?q=${query}`
+  );
+
+  return parseShow(showData[0]);
 };

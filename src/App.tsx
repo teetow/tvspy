@@ -7,6 +7,7 @@ import "./App.scss";
 function App() {
   const [shows, setShows] = useState<string[]>([
     "star%20trek%20discovery",
+    "the%20book%20of%20boba%20fett",
     "the%20expanse",
     "the%20witcher",
     "hawkeye",
