@@ -2,40 +2,15 @@
 
 .ts-app {
   @include theme.typo-base();
-  background-color: var(--theme-bg);
-  color: var(--theme-text);
   display: grid;
-  // gap: 1em;
   grid-template-areas:
     "topleft header topright"
-    // "lside picker rside"
     "lside body  rside"
     "footer footer  footer";
   grid-template-columns: 1fr max(60em, 80%) 1fr;
   grid-template-rows: auto auto auto 1fr;
-  height: 100%;
-  // width: ;
   justify-content: stretch;
   place-items: center;
-  padding: 4em 0;
-}
-
-.ts-app__header {
-  grid-area: header;
-  align-items: center;
-  display: grid;
-  gap: 1em;
-  grid-template-areas: "logo title";
-  justify-self: start;
-}
-
-.ts-app__logo {
-  width: 2.4em;
-}
-
-.ts-picker {
-  grid-area: header;
-  justify-self: end;
 }
 
 .ts-schedule {

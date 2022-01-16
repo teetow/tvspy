@@ -1,15 +1,9 @@
+import classNames from "classnames";
 import React, { useEffect, useState } from "react";
 import Picker from "./ui/Picker";
 import Schedule from "./ui/Schedule";
 
 import "./App.scss";
-
-// "The Expanse",
-// "the%20book%20of%20boba%20fett",
-// "the%20expanse",
-// "the%20witcher",
-// "hawkeye",
-// "battlebots",
 
 const storageKey = "tvSpyShows";
 
@@ -29,16 +23,31 @@ function App() {
 
   return (
     <div className="ts-app ts-theme">
-      <header className="ts-app__header">
+      <header
+        className={classNames([
+          "grid",
+          "items-center",
+          "justify-self-start",
+          "text-2xl",
+          "gap-2",
+          "[grid-area:header]",
+          '[grid-template-areas:"logo_title"]',
+        ])}
+      >
         <img
-          className="ts-app__logo"
+          className="h-8"
           src={process.env.PUBLIC_URL + "/favicon.svg"}
           alt="TVSpy logo"
         />
         <h1>TVSpy</h1>
       </header>
-      <Picker shows={shows} onSetShows={setShows} />
+      <Picker
+        className="[grid-area:header] justify-self-end"
+        onSetShows={setShows}
+      />
       <Schedule shows={shows} onSetShows={setShows} />
+
+      {/* <Schedule className={} shows={shows} onSetShows={setShows} /> */}
     </div>
   );
 }

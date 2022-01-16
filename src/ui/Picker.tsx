@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import React, { KeyboardEventHandler, useEffect, useState } from "react";
 import { getShows, Hit } from "../lib/fetchShow";
 import "./Picker.scss";
@@ -5,11 +6,11 @@ import "./Picker.scss";
 type SearchResult = Hit;
 
 type Props = {
-  shows: string[];
   onSetShows: React.Dispatch<React.SetStateAction<string[]>>;
+  className: string;
 };
 
-const Picker = ({ shows, onSetShows }: Props) => {
+const Picker = ({ onSetShows, className }: Props) => {
   const [searchText, setSearchText] = useState<string>("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [hits, setHits] = useState<Hit[]>([]);
@@ -50,9 +51,15 @@ const Picker = ({ shows, onSetShows }: Props) => {
   };
 
   return (
-    <div className="ts-picker" onBlur={(e) => setShowResults(false)}>
+    <div
+      className={classNames(["ts-picker", className])}
+      onBlur={() => setShowResults(false)}
+    >
       <input
-        className="ts-picker__input"
+        className={classNames([
+          "ts-picker-input",
+          "border-r-2",
+        ])}
         id="js-showsearch"
         onChange={(e) => setSearchText(e.target.value)}
         placeholder="Add a show..."
