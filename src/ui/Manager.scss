@@ -1,0 +1,43 @@
+@use "../style/theme";
+
+.ts-manager {
+  display: grid;
+  gap: 0.5em;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ts-manager__show {
+  align-items: center;
+  display: grid;
+  gap: 0.5em;
+  grid-template-areas: "image name date remove";
+  grid-template-columns: 2em auto 1fr auto;
+}
+
+.ts-manager__showimage {
+  grid-area: image;
+  background-size: cover;
+  height: 100%;
+  border-radius: 0.25em;
+}
+
+.ts-manager__showname {
+  grid-area: name;
+}
+
+.ts-manager__showtime {
+  grid-area: date;
+  color: var(--color-blue-300);
+}
+.ts-manager__showclear {
+  color: var(--color-blue-500);
+  cursor: pointer;
+  font-size: 0.8em;
+  grid-area: remove;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

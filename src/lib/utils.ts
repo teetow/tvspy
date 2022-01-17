@@ -88,3 +88,7 @@ export const initArray: any = (...dimensions: number[]) => {
 export const colorString = (s: string | number, c = 33) => {
   return `\u001b[${c}m${s}\u001b[${34}m`;
 };
+
+const msMult = 1000 * 60 * 60 * 24;
+
+export const getToday = (offset = 0) => new Date(Date.now() + offset * msMult);

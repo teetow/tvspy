@@ -59,6 +59,8 @@ const Picker = ({ onSetShows, className }: Props) => {
         className={classNames([
           "ts-picker-input",
           "border-r-2",
+          "p-1",
+          "[grid-area:search]",
         ])}
         id="js-showsearch"
         onChange={(e) => setSearchText(e.target.value)}
