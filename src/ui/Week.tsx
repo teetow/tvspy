@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import classnames from "classnames";
 import { format, isSameDay, parseISO, startOfISOWeek } from "date-fns";
 import { ScheduledShow } from "../lib/fetchShow";
@@ -37,7 +38,15 @@ export const Week = ({ showEvents }: Props) => {
   const weekStart = startOfISOWeek(now.getTime() - 7 * msMult);
 
   return (
-    <div className="ts-week">
+    <div
+      className={classNames([
+        "ts-week",
+        "grid",
+        "gap-1",
+        "[grid-template-columns:repeat(7,_1fr)]",
+        "[grid-template-rows:repeat(3,_8em)]"
+      ])}
+    >
       {range(21).map((day) => {
         const currentTs = new Date(weekStart.getTime() + day * msMult);
 

@@ -1,3 +1,9 @@
+import { compareAsc, compareDesc, isWithinInterval, parseISO } from "date-fns";
+
+const apiUrl = "https://api.tvmaze.com";
+
+type ShowStatus = "Running" | "In Development" | "Ended" | "To Be Determined";
+
 type Show = {
   _links: { self: { href: string }; previousepisode: { href: string } };
   dvdCountry: any; // null
@@ -14,7 +20,7 @@ type Show = {
   rating: { average: number }; // {average: 7.7}
   runtime: string; // null
   schedule: { time: string; days: string[] }; // {time: '', days: Array(1)}
-  status: string; // 'Running'
+  status: ShowStatus; // 'Running'
   summary: string; // '<p>Star Trek, one of the most iconic and influential global television franchises, returns 50 years after it first premiered, with <b>Star Trek: Discovery</b>. The series will feature a new ship, new characters and new missions, while embracing the same ideology and hope for the future that inspired a generation of dreamers and doers.</p>'
   type: string; // 'Scripted'
   updated: string; // 1639679749
@@ -28,6 +34,7 @@ export type Hit = {
   show: Show;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type UnknownEp = {
   code: number;
   message: string;
@@ -57,14 +64,40 @@ export type Ep = {
   };
 };
 
-export const fetchJson = async <T>(query: string) => {
+export type Season = {
+  id: number; // 68223,
+  url: string; // "https://www.tvmaze.com/seasons/68223/the-witcher-season-1",
+  number: number; // 1,
+  name: string; //"",
+  episodeOrder: number; // 8,
+  premiereDate: string; //"2019-12-20",
+  endDate: string; //"2019-12-20",
+  network: string; //null,
+  webChannel: {
+    id: number; //1,
+    name: string; //"Netflix",
+    country: string; //null
+  };
+  image: {
+    medium: string; //"https://static.tvmaze.com/uploads/images/medium_portrait/232/580518.jpg";
+    original: string; //"https://static.tvmaze.com/uploads/images/original_untouched/232/580518.jpg";
+  };
+  summary: string; //"<p>Geralt of Rivia, a mutated monster-hunter for hire, journeys toward his destiny in a turbulent world where people often prove more wicked than beasts.</p>";
+  _links: {
+    self: {
+      href: string; //"https://api.tvmaze.com/seasons/68223";
+    };
+  };
+};
+
+export const fetchJson = async <T extends unknown>(query: string) => {
   return await fetch(query)
     .then((res) => {
       if (res.status === 200) {
         return res.json();
       }
     })
-    .then((res) => res as T)
+    .then((res: T) => res as T)
     .catch((error) => {
       console.log("error in fetchJson: ", error);
       return error;
@@ -76,41 +109,104 @@ export type ScheduledShow = {
   id: number;
   day: string;
   url: string;
+  premiereDate?: string;
   prevEpDate?: string;
   nextEpDate?: string;
   image?: string;
+  status?: ShowStatus;
+  currentSeason?: Season;
+  prevSeason?: Season;
+  nextSeason?: Season;
+  seasonStatus?: "Running" | "Hiatus";
 };
 
-const parseShow = async (hit: Hit) => {
-  const prevEp = await fetchJson<Ep>(hit.show._links.previousepisode.href);
-  let nextEp;
-  if (prevEp) {
-    nextEp = await fetchJson<Ep>(
-      `https://api.tvmaze.com/shows/${hit.show.id}/episodebynumber?season=${
-        prevEp.season
-      }&number=${prevEp.number + 1}`
+const parseShow = async (show: Show) => {
+  let outData = {
+    name: show.name,
+    id: show.id,
+    day: show.schedule.days[0],
+    premiereDate: show.premiered,
+    url: show._links.self.href,
+    image: show.image.medium,
+    status: show.status,
+  } as ScheduledShow;
+
+  const seasons = (await fetchJson<Season[]>(
+    `${apiUrl}/shows/${show.id}/seasons`
+  )) as Season[];
+
+  let prevSeason = {} as Season;
+  let nextSeason = {} as Season;
+
+  const currentSeason = seasons.find((s) => {
+    return s.premiereDate && s.endDate
+      ? isWithinInterval(Date.now(), {
+          start: parseISO(s.premiereDate),
+          end: parseISO(s.endDate),
+        })
+      : false;
+  });
+
+  if (currentSeason) {
+    const maybePrevSeason = seasons.find(
+      (s) => s.number === currentSeason.number - 1
     );
+    if (maybePrevSeason) {
+      prevSeason = maybePrevSeason;
+    }
+  } else {
+    prevSeason = seasons
+      .filter((s) => s.premiereDate !== null)
+      .sort((a, b) =>
+        compareDesc(parseISO(a.premiereDate), parseISO(b.premiereDate))
+      )[0];
+
+    const maybeNextSeason =
+      show.status !== "Ended" && seasons.find((s) => !s.premiereDate);
+    if (maybeNextSeason) nextSeason = maybeNextSeason;
   }
 
-  return {
-    name: hit.show.name,
-    id: hit.show.id,
-    day: hit.show.schedule.days[0],
-    url: hit.show._links.self.href,
-    prevEpDate: prevEp.airdate,
-    nextEpDate: nextEp ? nextEp.airdate : null,
-    image: hit.show.image.medium,
-  } as ScheduledShow;
+  outData = {
+    ...outData,
+    ...{
+      seasonStatus: currentSeason ? "Running" : "Hiatus",
+      currentSeason: currentSeason,
+      prevSeason: prevSeason,
+      nextSeason: nextSeason,
+    },
+  };
+
+  const prevEp = (await fetchJson<Ep>(show._links.previousepisode.href)) as Ep;
+
+  let nextEp;
+
+  if (prevEp) {
+    nextEp = await fetchJson<Ep>(
+      `${apiUrl}/shows/${
+        show.id
+      }/episodebynumber?season=${currentSeason?.number}&number=${prevEp.number + 1}`
+    );
+  }
+  outData = {
+    ...outData,
+    ...({
+      prevEpDate: prevEp.airdate,
+      nextEpDate: nextEp ? nextEp.airdate : null,
+    } as ScheduledShow),
+  };
+
+  return outData;
 };
 
-export const getShows = async (query: string) => {
+export const searchShows = async (query: string) => {
   return (await fetchJson<Hit[]>(
-    `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`
+    `${apiUrl}/search/shows?q=${encodeURIComponent(query)}`
   )) as Promise<Hit[]>;
 };
 
-export const getShow = async (query: string) => {
-  const showData = await getShows(query);
-
-  return parseShow(showData[0]);
+export const getShowById = async (id: number) => {
+  const showData = (await fetchJson<Show>(
+    `${apiUrl}/shows/${id}`
+  )) as Promise<Show>;
+  return parseShow(await showData);
 };

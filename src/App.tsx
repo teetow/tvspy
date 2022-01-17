@@ -1,19 +1,16 @@
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
-import { getShow, ScheduledShow } from "./lib/fetchShow";
+import { getShowById, ScheduledShow } from "./lib/fetchShow";
+import Footer from "./ui/Footer";
 import Manager from "./ui/Manager";
 import Picker from "./ui/Picker";
 import Week from "./ui/Week";
 
-import "./App.scss";
-
 const storageKey = "tvSpyShows";
-
-// type ShowMap = Record<number, ScheduledShow>;
 
 function App() {
   const [shows, setShows] = useState<ScheduledShow[]>([]);
-  const [favorites, setFavorites] = useState<string[]>(() => {
+  const [favorites, setFavorites] = useState<number[]>(() => {
     const savedFavorites = localStorage.getItem(storageKey);
 
     if (savedFavorites) {
@@ -28,8 +25,12 @@ function App() {
 
   useEffect(() => {
     favorites.forEach((show) => {
-      getShow(show).then((res) => {
-        setShows((prev) => [...prev.filter((s) => s.id !== res.id), res]);
+      getShowById(show).then((res) => {
+        setShows((prev) =>
+          [...prev.filter((s) => s.id !== res.id), res].sort(
+            (a, b) => a.id - b.id
+          )
+        );
       });
     });
   }, [favorites, setShows]);
@@ -40,7 +41,10 @@ function App() {
         "ts-app",
         "ts-theme",
         "grid",
-        "gap-2",
+        "gap-8",
+        "[width:min(60em,_100%)]",
+        `[grid-template-areas:"header"_"week"_"manager"_"footer"]`,
+        `[grid-template-rows:auto_auto_1fr_auto]`,
       ])}
     >
       <header
@@ -68,12 +72,12 @@ function App() {
       <Week showEvents={shows} />
       <Manager
         shows={shows}
-        onRemoveShow={(id) =>
-          setShows((prev) => prev.filter((s) => s.id !== id))
-        }
+        onRemoveShow={(id) => {
+          setShows((prev) => prev.filter((s) => s.id !== id));
+          setFavorites((prev) => prev.filter((f) => f !== id));
+        }}
       />
-
-      {/* <Schedule className={} shows={shows} onSetShows={setShows} /> */}
+      <Footer />
     </div>
   );
 }

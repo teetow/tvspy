@@ -1,12 +1,18 @@
 import classNames from "classnames";
-import React, { KeyboardEventHandler, useEffect, useState } from "react";
-import { getShows, Hit } from "../lib/fetchShow";
+import React, {
+  KeyboardEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { searchShows, Hit } from "../lib/fetchShow";
+import useClickAway from "../lib/useClickAway";
 import "./Picker.scss";
 
 type SearchResult = Hit;
 
 type Props = {
-  onSetShows: React.Dispatch<React.SetStateAction<string[]>>;
+  onSetShows: React.Dispatch<React.SetStateAction<number[]>>;
   className: string;
 };
 
@@ -17,8 +23,14 @@ const Picker = ({ onSetShows, className }: Props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showResults, setShowResults] = useState(false);
 
+  const ref = useRef<HTMLDivElement>(null);
+
+  useClickAway(ref, () => {
+    setShowResults(false);
+  });
+
   useEffect(() => {
-    getShows(searchText).then((res) => setHits(res));
+    searchShows(searchText).then((res) => setHits(res));
   }, [searchText]);
 
   useEffect(() => {
@@ -34,7 +46,7 @@ const Picker = ({ onSetShows, className }: Props) => {
     }
 
     if (ev.key === "Enter") {
-      onSetShows((prev) => [...prev, hits[selectedIndex].show.name]);
+      onSetShows((prev) => [...prev, hits[selectedIndex].show.id]);
       setSearchText("");
       return;
     }
@@ -51,15 +63,16 @@ const Picker = ({ onSetShows, className }: Props) => {
   };
 
   return (
-    <div
-      className={classNames(["ts-picker", className])}
-      onBlur={() => setShowResults(false)}
-    >
+    <div ref={ref} className={classNames(["ts-picker", className])}>
       <input
         className={classNames([
           "ts-picker-input",
-          "border-r-2",
-          "p-1",
+          "border-2 border-brand-600/0 rounded-sm",
+          "focus:border-brand-600/100 focus:outline-none",
+          "px-2 py-1",
+          "bg-brand-400",
+          "text-brand-900 text-lg",
+          "placeholder:text-brand-700",
           "[grid-area:search]",
         ])}
         id="js-showsearch"
@@ -72,7 +85,14 @@ const Picker = ({ onSetShows, className }: Props) => {
       ></input>
 
       {showResults && (
-        <ul className="ts-picker__results">
+        <ul
+          className={classNames([
+            "ts-picker__results",
+            "text-lg",
+            "overflow-y-auto",
+            "max-h-80",
+          ])}
+        >
           {results.map((r, i) => (
             <li
               className="ts-picker__item"
@@ -80,7 +100,10 @@ const Picker = ({ onSetShows, className }: Props) => {
               data-index={i}
               data-selected={selectedIndex === i ? "" : undefined}
               onClick={(e) =>
-                onSetShows((prev: string[]) => [...prev, r.show.name])
+                onSetShows((prev: number[]) => {
+                  setSearchText("");
+                  return [...prev, r.show.id];
+                })
               }
             >
               {r.show?.image?.medium && (

@@ -1,23 +1,17 @@
 @use "../style/theme";
 
-$base: ".ts-week";
-
-#{$base} {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(2, 8em);
-}
-
 $base: ".ts-day";
 
 #{$base} {
   --bg: var(--color-blue-100);
   background-color: var(--bg);
   border-radius: 0.2em;
-  margin: 0.2em;
   color: var(--fg);
   display: grid;
-  grid-template-areas: "TL T TR" "MAIN MAIN MAIN" "BL B BR";
+  grid-template-areas:
+    "tl t tr"
+    "main main main"
+    "bl b br";
   grid-template-rows: 1fr 3fr 1fr;
   padding: 1em;
 
@@ -30,18 +24,24 @@ $base: ".ts-day";
   color: var(--color-blue-600);
   align-self: center;
   font-size: 0.9em;
-  grid-area: TL;
+  grid-area: tl;
 }
 
 #{$base}__day {
   color: var(--color-blue-600);
   align-self: center;
   font-size: 0.7em;
-  grid-area: TR;
+  grid-area: tr;
   justify-self: end;
 }
 
 #{$base}__event {
   color: var(--color-blue-900);
-  grid-area: MAIN;
+  grid-area: main;
+
+  @media all and (max-width: 48em) {
+    &-showname {
+      word-break: break-all;
+    }
+  }
 }

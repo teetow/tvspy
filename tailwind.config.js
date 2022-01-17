@@ -10,6 +10,21 @@ module.exports = {
       green: "#06d6a0",
       white: colors.white,
     },
+    fontFamily: {
+      sans: [
+        "Source Sans Pro",
+        "-apple-system",
+        "BlinkMacSystemFont",
+        "Segoe UI",
+        "Roboto",
+        "Oxygen",
+        "Ubuntu",
+        "Cantarell",
+        "Open Sans",
+        "Helvetica Neue",
+        "sans-serif",
+      ],
+    },
     extend: {
       colors: {
         brand: {

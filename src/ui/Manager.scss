@@ -1,11 +1,7 @@
 @use "../style/theme";
 
-.ts-manager {
+.ts-manager__showlist {
   display: grid;
-  gap: 0.5em;
-  list-style: none;
-  margin: 0;
-  padding: 0;
 }
 
 .ts-manager__show {
@@ -29,10 +25,9 @@
 
 .ts-manager__showtime {
   grid-area: date;
-  color: var(--color-blue-300);
 }
 .ts-manager__showclear {
-  color: var(--color-blue-500);
+  color: var(--color-blue-600);
   cursor: pointer;
   font-size: 0.8em;
   grid-area: remove;
@@ -40,4 +35,9 @@
   &:hover {
     text-decoration: underline;
   }
+}
+
+.ts-manager__details {
+  display: grid;
+  grid-template-areas: "image info";
 }
