@@ -1,19 +1,30 @@
 @use "./style/theme";
 
+#root {
+  display: grid;
+  grid-auto-flow: column;
+  justify-items: center;
+}
+
 .ts-app {
   @include theme.typo-base();
-  display: grid;
   grid-template-areas:
-    "topleft header topright"
-    "lside body  rside"
-    "footer footer  footer";
-  grid-template-columns: 1fr max(60em, 80%) 1fr;
+    "header"
+    "week"
+    "manager"
+    "footer";
   grid-template-rows: auto auto auto 1fr;
   justify-content: stretch;
   place-items: center;
+  max-width: max(60em, 80%);
 }
 
-.ts-schedule {
-  grid-area: body;
+.ts-week {
+  grid-area: week;
   justify-self: stretch;
+}
+
+.ts-manager {
+  grid-area: manager;
+  justify-self: start;
 }

@@ -1,13 +1,11 @@
 import classnames from "classnames";
 import { format, isSameDay, parseISO, startOfISOWeek } from "date-fns";
 import { ScheduledShow } from "../lib/fetchShow";
-import { range } from "../lib/utils";
+import { getToday, range } from "../lib/utils";
 
 import "./Week.scss";
 
 const msMult = 1000 * 60 * 60 * 24;
-
-const getToday = (offset = 0) => new Date(Date.now() + offset * msMult);
 
 type ShowEvent = ScheduledShow;
 

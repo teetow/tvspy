@@ -1,28 +1,48 @@
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
+import { getShow, ScheduledShow } from "./lib/fetchShow";
+import Manager from "./ui/Manager";
 import Picker from "./ui/Picker";
-import Schedule from "./ui/Schedule";
+import Week from "./ui/Week";
 
 import "./App.scss";
 
 const storageKey = "tvSpyShows";
 
-function App() {
-  const [shows, setShows] = useState<string[]>(() => {
-    const savedShows = localStorage.getItem(storageKey);
+// type ShowMap = Record<number, ScheduledShow>;
 
-    if (savedShows) {
-      return JSON.parse(savedShows);
+function App() {
+  const [shows, setShows] = useState<ScheduledShow[]>([]);
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const savedFavorites = localStorage.getItem(storageKey);
+
+    if (savedFavorites) {
+      return JSON.parse(savedFavorites);
     }
     return [];
   });
 
   useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(shows));
-  }, [shows]);
+    localStorage.setItem(storageKey, JSON.stringify(favorites));
+  }, [favorites]);
+
+  useEffect(() => {
+    favorites.forEach((show) => {
+      getShow(show).then((res) => {
+        setShows((prev) => [...prev.filter((s) => s.id !== res.id), res]);
+      });
+    });
+  }, [favorites, setShows]);
 
   return (
-    <div className="ts-app ts-theme">
+    <div
+      className={classNames([
+        "ts-app",
+        "ts-theme",
+        "grid",
+        "gap-2",
+      ])}
+    >
       <header
         className={classNames([
           "grid",
@@ -43,9 +63,15 @@ function App() {
       </header>
       <Picker
         className="[grid-area:header] justify-self-end"
-        onSetShows={setShows}
+        onSetShows={setFavorites}
       />
-      <Schedule shows={shows} onSetShows={setShows} />
+      <Week showEvents={shows} />
+      <Manager
+        shows={shows}
+        onRemoveShow={(id) =>
+          setShows((prev) => prev.filter((s) => s.id !== id))
+        }
+      />
 
       {/* <Schedule className={} shows={shows} onSetShows={setShows} /> */}
     </div>
