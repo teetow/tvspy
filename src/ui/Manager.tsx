@@ -149,7 +149,7 @@ const Manager: FunctionComponent<Props> = ({ shows, onRemoveShow }) => {
       ])}
     >
       {showData && <ShowDetails show={showData} />}
-      <ul className="ts-manager__showlist [grid-area:list]">
+      <ul className="ts-manager__showlist [grid-area:list] [align-self:start]">
         {shows.map((show) => (
           <li
             key={show.id}
