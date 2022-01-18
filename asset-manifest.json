@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/tvspy/static/css/main.7c54b95a.css",
-    "main.js": "/tvspy/static/js/main.659b5890.js",
+    "main.css": "/tvspy/static/css/main.09fd55ec.css",
+    "main.js": "/tvspy/static/js/main.c33e86a1.js",
     "index.html": "/tvspy/index.html",
-    "main.7c54b95a.css.map": "/tvspy/static/css/main.7c54b95a.css.map",
-    "main.659b5890.js.map": "/tvspy/static/js/main.659b5890.js.map"
+    "main.09fd55ec.css.map": "/tvspy/static/css/main.09fd55ec.css.map",
+    "main.c33e86a1.js.map": "/tvspy/static/js/main.c33e86a1.js.map"
   },
   "entrypoints": [
-    "static/css/main.7c54b95a.css",
-    "static/js/main.659b5890.js"
+    "static/css/main.09fd55ec.css",
+    "static/js/main.c33e86a1.js"
   ]
 }
