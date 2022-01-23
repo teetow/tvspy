@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+svg {
+  .svgpath {
+    &--filled {
+      fill: var(--path-color);
+      transition: fill 75ms ease-in-out;
+
+      a:hover & {
+        fill: var(--path-hover-color);
+      }
+    }
+  }
+}
