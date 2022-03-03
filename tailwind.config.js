@@ -12,6 +12,7 @@ module.exports = {
     },
     fontFamily: {
       sans: [
+        "Open Sans",
         "Source Sans Pro",
         "-apple-system",
         "BlinkMacSystemFont",

@@ -1,6 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wdth@75..100&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body, input {
+  font-stretch: 85%;
+}
 
 svg {
   .svgpath {

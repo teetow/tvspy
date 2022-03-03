@@ -8,12 +8,13 @@ $base: ".ts-day";
   border-radius: 0.2em;
   color: var(--fg);
   display: grid;
+  font-size: 0.9em;
   grid-template-areas:
     "tl t tr"
     "main main main"
     "bl b br";
   grid-template-rows: 1fr 3fr 1fr;
-  padding: 1em;
+  padding: 0.5em;
 
   &--is-current {
     --bg: var(--color-blue-300);
@@ -23,7 +24,6 @@ $base: ".ts-day";
 #{$base}__name {
   color: var(--color-blue-600);
   align-self: center;
-  font-size: 0.9em;
   grid-area: tl;
 }
 
@@ -34,10 +34,14 @@ $base: ".ts-day";
   grid-area: tr;
   justify-self: end;
 }
+#{$base}__events {
+  grid-area: main;
+}
 
 #{$base}__event {
   color: var(--color-blue-900);
   grid-area: main;
+  font-stretch: 50%;
 
   @media all and (max-width: 48em) {
     &-showname {

@@ -22,11 +22,13 @@ export const Day = ({ name, date, showEvents }: DayProps) => {
     <div className={classes}>
       <span className="ts-day__name">{name}</span>
       <span className="ts-day__day">{format(date, "dd")}</span>
-      {showEvents.map((event) => (
-        <div key={event.name} className="ts-day__event">
-          <span className="ts-day__event-showname">{event.name}</span>
-        </div>
-      ))}
+      <div className="ts-day__events">
+        {showEvents.map((event) => (
+          <div key={event.name} className="ts-day__event">
+            <span className="ts-day__event-showname">{event.name}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
