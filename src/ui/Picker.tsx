@@ -30,7 +30,9 @@ const Picker = ({ onSetShows, className }: Props) => {
   });
 
   useEffect(() => {
-    searchShows(searchText).then((res) => setHits(res));
+    if (searchText) {
+      searchShows(searchText).then((res) => setHits(res));
+    }
   }, [searchText]);
 
   useEffect(() => {

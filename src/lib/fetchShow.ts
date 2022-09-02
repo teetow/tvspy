@@ -176,11 +176,13 @@ const parseShow = async (show: Show) => {
     },
   };
 
-  const prevEp = (await fetchJson<Ep>(show._links.previousepisode?.href)) as Ep;
+  const prevEp = show?._links?.previousepisode?.href
+    ? ((await fetchJson<Ep>(show._links.previousepisode?.href)) as Ep)
+    : undefined;
 
   let nextEp;
 
-  if (prevEp && prevEp.number) {
+  if (currentSeason && currentSeason.number && prevEp && prevEp.number) {
     nextEp = await fetchJson<Ep>(
       `${apiUrl}/shows/${show.id}/episodebynumber?season=${
         currentSeason?.number
@@ -190,7 +192,7 @@ const parseShow = async (show: Show) => {
   outData = {
     ...outData,
     ...({
-      prevEpDate: prevEp.airdate,
+      prevEpDate: prevEp ? prevEp.airdate : null,
       nextEpDate: nextEp ? nextEp.airdate : null,
     } as ScheduledShow),
   };
