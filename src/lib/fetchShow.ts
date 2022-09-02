@@ -176,15 +176,15 @@ const parseShow = async (show: Show) => {
     },
   };
 
-  const prevEp = (await fetchJson<Ep>(show._links.previousepisode.href)) as Ep;
+  const prevEp = (await fetchJson<Ep>(show._links.previousepisode?.href)) as Ep;
 
   let nextEp;
 
-  if (prevEp) {
+  if (prevEp && prevEp.number) {
     nextEp = await fetchJson<Ep>(
-      `${apiUrl}/shows/${
-        show.id
-      }/episodebynumber?season=${currentSeason?.number}&number=${prevEp.number + 1}`
+      `${apiUrl}/shows/${show.id}/episodebynumber?season=${
+        currentSeason?.number
+      }&number=${prevEp.number + 1}`
     );
   }
   outData = {
