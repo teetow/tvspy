@@ -58,11 +58,7 @@ function App() {
           '[grid-template-areas:"logo_title"]',
         ])}
       >
-        <img
-          className="h-8"
-          src={process.env.PUBLIC_URL + "/favicon.svg"}
-          alt="TVSpy logo"
-        />
+        <img className="h-8" src="/favicon.svg" alt="TVSpy logo" />
         <h1>TVSpy</h1>
       </header>
       <Picker
