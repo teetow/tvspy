@@ -55,31 +55,49 @@ const ShowDetails = ({ show }: { show: ScheduledShow }) => {
         `grid`,
         `gap-2`,
         `[grid-template-areas:"info_image"]`,
-        `[grid-template-columns:4fr_1fr]`,
+        `[grid-template-columns:3fr_1fr]`,
       ])}
     >
-      <div
-        className={classNames([
-          `ts-manager__details__image`,
-          `[background-size:contain]`,
-          "bg-no-repeat",
-          `[grid-area:image]`,
-        ])}
-        style={{ backgroundImage: `url(${show.image})` }}
-      ></div>
-      <ul className="ts-manager__details__info [grid-area:info]">
-        <li className="text-2xl">{show.name}</li>
-        <li className="text-brand-600 pb-2">{getShowStatus(show)}</li>
-        <li className="pb-2">
-          <span className="text-xl">
+      <ul className="ts-manager__details__info [grid-area:info] grid">
+        <li className="text-2xl leading-4">{show.name}</li>
+        <li className="grid grid-flow-col items-baseline justify-start gap-2">
+          <span className="">
             Season {show.currentSeason?.number || show.prevSeason?.number}
           </span>
-          &nbsp;
           <span className="text-brand-600">{getStatus(show)}</span>
         </li>
-        {show.prevEpDate && <li>Previous episode {fmt(show.prevEpDate)}</li>}
         {show.nextEpDate && <li>Next episode {fmt(show.nextEpDate)}</li>}
+        {show.prevEpDate && <li>Previous episode {fmt(show.prevEpDate)}</li>}
+        <li className="grid grid-flow-col justify-start gap-2">
+          <span className="text-brand-600">{getShowStatus(show)}</span>
+          <span>
+            <a
+              className={classNames("text-brand-700")}
+              href={show.url.replace("api.tvmaze", "www.tvmaze")}
+              target="_blank"
+            >
+              View on TVMaze
+            </a>
+          </span>
+        </li>
       </ul>
+      <div
+        className={classNames([
+          "ts-manager__sidepanel",
+          `[grid-area:image]`,
+          `grid`,
+          `[grid-template-rows:1fr_auto]`,
+        ])}
+      >
+        <div
+          className={classNames([
+            `ts-manager__details__image`,
+            `[background-size:contain]`,
+            "bg-no-repeat",
+          ])}
+          style={{ backgroundImage: `url(${show.image})` }}
+        ></div>
+      </div>
     </div>
   );
 };

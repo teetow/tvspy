@@ -1,12 +1,25 @@
-import classNames from "classnames";
-import classnames from "classnames";
-import { format, isSameDay, parseISO, startOfISOWeek } from "date-fns";
+import { default as classNames, default as classnames } from "classnames";
+import {
+  endOfDay,
+  format,
+  intervalToDuration,
+  isSameDay,
+  parseISO,
+  startOfISOWeek,
+} from "date-fns";
+import { useEffect, useState } from "react";
 import { ScheduledShow } from "../lib/fetchShow";
 import { getToday, range } from "../lib/utils";
 
 import "./Week.scss";
 
 const msMult = 1000 * 60 * 60 * 24;
+
+const getTimeToMidnight = (date: Date) => {
+  const i = intervalToDuration({ start: date, end: endOfDay(date) });
+
+  return (i.hours! * 60 + i.minutes!) * 60 + i.seconds!;
+};
 
 type ShowEvent = ScheduledShow;
 
@@ -36,8 +49,19 @@ export const Day = ({ name, date, showEvents }: DayProps) => {
 type Props = { showEvents: ShowEvent[] };
 
 export const Week = ({ showEvents }: Props) => {
-  const now = getToday();
+  const [now, setNow] = useState(getToday());
   const weekStart = startOfISOWeek(now.getTime() - 7 * msMult);
+
+  useEffect(() => {
+    const secsToMidnight = getTimeToMidnight(getToday());
+
+    console.log(`midnight in ${secsToMidnight}`);
+    const handle = globalThis.setTimeout(() => {
+      setNow(getToday());
+    }, secsToMidnight * 1000);
+
+    return () => globalThis.clearTimeout(handle);
+  });
 
   return (
     <div
@@ -46,7 +70,7 @@ export const Week = ({ showEvents }: Props) => {
         "grid",
         "gap-1",
         "[grid-template-columns:repeat(7,_1fr)]",
-        "[grid-template-rows:repeat(3,_8em)]"
+        "[grid-template-rows:repeat(3,_8em)]",
       ])}
     >
       {range(21).map((day) => {
