@@ -1,4 +1,4 @@
-import { compareAsc, compareDesc, isWithinInterval, parseISO } from "date-fns";
+import { compareDesc, isWithinInterval, parseISO } from "date-fns";
 
 const apiUrl = "https://api.tvmaze.com";
 
@@ -135,8 +135,8 @@ const parseShow = async (show: Show) => {
     `${apiUrl}/shows/${show.id}/seasons`
   )) as Season[];
 
-  let prevSeason = {} as Season;
-  let nextSeason = {} as Season;
+  let prevSeason: Season | undefined = undefined;
+  let nextSeason: Season | undefined = undefined;
 
   const currentSeason = seasons.find((s) => {
     return s.premiereDate && s.endDate
@@ -156,13 +156,14 @@ const parseShow = async (show: Show) => {
     }
   } else {
     prevSeason = seasons
-      .filter((s) => s.premiereDate !== null)
+      .filter((s) => parseISO(s.endDate) < new Date())
       .sort((a, b) =>
         compareDesc(parseISO(a.premiereDate), parseISO(b.premiereDate))
       )[0];
 
     const maybeNextSeason =
-      show.status !== "Ended" && seasons.find((s) => !s.premiereDate);
+      show.status !== "Ended" &&
+      seasons.find((s) => parseISO(s.premiereDate) > new Date());
     if (maybeNextSeason) nextSeason = maybeNextSeason;
   }
 
@@ -182,13 +183,19 @@ const parseShow = async (show: Show) => {
 
   let nextEp;
 
-  if (currentSeason && currentSeason.number && prevEp && prevEp.number) {
+  if (currentSeason && prevEp) {
+    let season = currentSeason ? currentSeason : nextSeason;
     nextEp = await fetchJson<Ep>(
       `${apiUrl}/shows/${show.id}/episodebynumber?season=${
-        currentSeason?.number
-      }&number=${prevEp.number + 1}`
+        season?.number
+      }&number=${prevEp.number + 1}&currentSeason`
+    );
+  } else if (nextSeason) {
+    nextEp = await fetchJson<Ep>(
+      `${apiUrl}/shows/${show.id}/episodebynumber?season=${nextSeason?.number}&number=1&nextSeason`
     );
   }
+
   outData = {
     ...outData,
     ...({

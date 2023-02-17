@@ -55,7 +55,6 @@ export const Week = ({ showEvents }: Props) => {
   useEffect(() => {
     const secsToMidnight = getTimeToMidnight(getToday());
 
-    console.log(`midnight in ${secsToMidnight}`);
     const handle = globalThis.setTimeout(() => {
       setNow(getToday());
     }, secsToMidnight * 1000);

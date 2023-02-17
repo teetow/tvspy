@@ -24,7 +24,10 @@ const fmt = (date?: string) => {
 const getShowStatus = (show: ScheduledShow) => {
   let status;
   if (show.status === "Ended")
-    return `Ended on ${fmt(show.prevSeason?.endDate)}`;
+    return `${format(parseISO(show.premiereDate || ""), "yyyy")} - ${format(
+      parseISO(show.prevSeason?.endDate || ""),
+      "yyyy"
+    )}`;
   if (show.status === "Running")
     return `${format(parseISO(show.premiereDate || ""), "yyyy")}`;
   return status;
@@ -35,15 +38,18 @@ const getStatus = (show: ScheduledShow) => {
     return "";
   }
 
-  if (show.seasonStatus === "Running") {
-    return `started on ${fmt(show.currentSeason?.premiereDate || "")}`;
-  }
   if (show.seasonStatus === "Hiatus" && show.prevSeason !== null) {
     return `ended on ${show.prevSeason?.endDate}`;
   }
-  if (show.seasonStatus === "Hiatus" && show.nextSeason !== null) {
-    return `returns on ${show.nextSeason?.premiereDate}`;
+
+  if (show.seasonStatus === "Running") {
+    if (show.nextSeason) {
+      return `starting on ${show.nextSeason.premiereDate}`;
+    }
+
+    return `started on ${fmt(show.currentSeason?.premiereDate || "")}`;
   }
+
   return `ended on ${show.prevSeason?.endDate}`;
 };
 
@@ -59,17 +65,20 @@ const ShowDetails = ({ show }: { show: ScheduledShow }) => {
       ])}
     >
       <ul className="ts-manager__details__info [grid-area:info] grid">
-        <li className="text-2xl leading-4">{show.name}</li>
+        <li className="text-2xl leading-8">{show.name}</li>
+        <span className="text-brand-600">{getShowStatus(show)}</span>
         <li className="grid grid-flow-col items-baseline justify-start gap-2">
           <span className="">
-            Season {show.currentSeason?.number || show.prevSeason?.number}
+            Season{" "}
+            {show.nextSeason?.number ||
+              show.currentSeason?.number ||
+              show.prevSeason?.number}
           </span>
           <span className="text-brand-600">{getStatus(show)}</span>
         </li>
         {show.nextEpDate && <li>Next episode {fmt(show.nextEpDate)}</li>}
         {show.prevEpDate && <li>Previous episode {fmt(show.prevEpDate)}</li>}
         <li className="grid grid-flow-col justify-start gap-2">
-          <span className="text-brand-600">{getShowStatus(show)}</span>
           <span>
             <a
               className={classNames("text-brand-700")}
