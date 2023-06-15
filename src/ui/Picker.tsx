@@ -48,8 +48,10 @@ const Picker = ({ onSetShows, className }: Props) => {
     }
 
     if (ev.key === "Enter") {
-      onSetShows((prev) => [...prev, hits[selectedIndex].show.id]);
-      setSearchText("");
+      if (hits && hits[selectedIndex]) {
+        onSetShows((prev) => [...prev, hits[selectedIndex].show.id]);
+        setSearchText("");
+      }
       return;
     }
 
