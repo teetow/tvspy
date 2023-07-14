@@ -8,7 +8,9 @@ const root = createRoot(document.getElementById("root")!);
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter
+      basename={import.meta.url.indexOf("localhost") > -1 ? "/" : "/tvspy"}
+    >
       <App />
     </BrowserRouter>
   </React.StrictMode>
