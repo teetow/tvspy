@@ -21,9 +21,13 @@
     "typescript": "^5.1.6",
     "vite": "^4.4.4"
   },
+  "devDependencies": {
+    "vitest": "^0.33.0"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "test": "vitest"
   },
   "eslintConfig": {
     "extends": "react-app"
