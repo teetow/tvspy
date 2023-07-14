@@ -1,6 +1,5 @@
-import { default as classNames, default as classnames } from "classnames";
+import { default as classnames } from "classnames";
 import {
-  add,
   addDays,
   endOfDay,
   format,
@@ -9,12 +8,12 @@ import {
   startOfISOWeek,
   subDays,
 } from "date-fns";
-import { useEffect, useState } from "react";
+import { HTMLAttributes, useEffect, useState } from "react";
 import { getToday, range } from "../lib/utils";
 
-import "./Week.scss";
-import { getEpisodesWithin } from "../lib/show";
 import { Ep, getShowById } from "../lib/fetchShow";
+import { getEpisodesWithin } from "../lib/show";
+import "./Week.scss";
 
 const msMult = 1000 * 60 * 60 * 24;
 
@@ -52,9 +51,9 @@ type ScheduledEpisode = {
   date: Date;
 };
 
-type Props = { showIds: number[] };
+type Props = { showIds: number[] } & HTMLAttributes<HTMLDivElement>;
 
-export const Week = ({ showIds }: Props) => {
+export const Week = ({ showIds, className, ...props }: Props) => {
   const [eps, setEps] = useState<ScheduledEpisode[]>();
 
   useEffect(() => {
@@ -110,13 +109,14 @@ export const Week = ({ showIds }: Props) => {
 
   return (
     <div
-      className={classNames([
+      className={classnames(className, [
         "ts-week",
         "grid",
         "gap-1",
         "[grid-template-columns:repeat(7,_1fr)]",
         "[grid-template-rows:repeat(3,_8em)]",
       ])}
+      {...props}
     >
       {eps &&
         range(21).map((day) => {

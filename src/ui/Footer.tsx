@@ -1,9 +1,12 @@
 import classNames from "classnames";
 import Assets from "../lib/assets";
 import Link from "./Link";
+import { HTMLAttributes } from "react";
 
-const Footer = () => (
-  <div className={classNames("ts-footer")}>
+type Props = HTMLAttributes<HTMLDivElement>;
+
+const Footer = ({ className, ...props }: Props) => (
+  <div className={classNames(className, "ts-footer")} {...props}>
     <ul
       className={classNames(
         "grid grid-flow-col",

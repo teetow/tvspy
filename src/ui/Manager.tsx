@@ -8,7 +8,13 @@ import {
   startOfISOWeek,
   subDays,
 } from "date-fns";
-import { FunctionComponent, useEffect, useRef, useState } from "react";
+import {
+  FunctionComponent,
+  HTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { getShowById, ScheduledShow } from "../lib/fetchShow";
 import useClickAway from "../lib/useClickAway";
 import "./Manager.scss";
@@ -136,9 +142,14 @@ const getShowComment = (show: ScheduledShow) => {
 type Props = {
   showIds: number[];
   onRemoveShow: (id: number) => void;
-};
+} & HTMLAttributes<HTMLDivElement>;
 
-const Manager: FunctionComponent<Props> = ({ showIds, onRemoveShow }) => {
+const Manager: FunctionComponent<Props> = ({
+  showIds,
+  onRemoveShow,
+  className,
+  ...props
+}) => {
   const [shows, setShows] = useState<ScheduledShow[]>();
   useEffect(() => {
     const fetchShows = async () => {
@@ -147,6 +158,7 @@ const Manager: FunctionComponent<Props> = ({ showIds, onRemoveShow }) => {
       );
       setShows(showData);
     };
+    fetchShows();
   }, [showIds]);
 
   const [selectedShowId, setSelectedShowId] = useState<number>();
@@ -174,7 +186,7 @@ const Manager: FunctionComponent<Props> = ({ showIds, onRemoveShow }) => {
   return (
     <div
       ref={containerRef}
-      className={classNames([
+      className={classNames(className, [
         "ts-manager",
         "grid",
         "gap-8",
@@ -185,36 +197,38 @@ const Manager: FunctionComponent<Props> = ({ showIds, onRemoveShow }) => {
         `[grid-template-areas:"list_details""list_empty"]`,
         `[grid-template-columns:2fr_2fr]`,
       ])}
+      {...props}
     >
       {showData && <ShowDetails show={showData} />}
       <ul className="ts-manager__showlist [grid-area:list] [align-self:start]">
-        {shows && shows.map((show) => (
-          <li
-            key={show.id}
-            className={classNames(
-              ["ts-manager__show", "cursor-default", "p-2"],
-              {
-                "bg-brand-300": show.id === selectedShowId,
-              }
-            )}
-            onClick={() => setSelectedShowId(show.id)}
-          >
-            <span
-              className="ts-manager__showimage rounded-4 aspect-square"
-              style={{ backgroundImage: `url(${show.image})` }}
-            />
-            <span className="ts-manager__showname">{show.name}</span>
-            <span className="ts-manager__showtime text-brand-700">
-              {getShowComment(show)}
-            </span>
-            <span
-              className="ts-manager__showclear"
-              onClick={() => onRemoveShow(show.id)}
+        {shows &&
+          shows.map((show) => (
+            <li
+              key={show.id}
+              className={classNames(
+                ["ts-manager__show", "cursor-default", "p-2"],
+                {
+                  "bg-brand-300": show.id === selectedShowId,
+                }
+              )}
+              onClick={() => setSelectedShowId(show.id)}
             >
-              Remove
-            </span>
-          </li>
-        ))}
+              <span
+                className="ts-manager__showimage rounded-4 aspect-square"
+                style={{ backgroundImage: `url(${show.image})` }}
+              />
+              <span className="ts-manager__showname">{show.name}</span>
+              <span className="ts-manager__showtime text-brand-700">
+                {getShowComment(show)}
+              </span>
+              <span
+                className="ts-manager__showclear"
+                onClick={() => onRemoveShow(show.id)}
+              >
+                Remove
+              </span>
+            </li>
+          ))}
       </ul>
     </div>
   );
