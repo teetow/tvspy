@@ -138,7 +138,7 @@ const parseShow = async (show: Show) => {
     day: show.schedule.days[0],
     premiereDate: show.premiered,
     url: show._links.self.href,
-    image: show.image.medium,
+    image: show?.image?.medium,
     status: show.status,
   } as ScheduledShow;
 
