@@ -1,6 +1,7 @@
 import classNames from "classnames";
-import React, { useEffect, useState } from "react";
-import { getShowById, ScheduledShow } from "./lib/fetchShow";
+import { useEffect, useState } from "react";
+import { Route, Routes, useSearchParams } from "react-router-dom";
+import { ScheduledShow, getShowById, searchShows } from "./lib/fetchShow";
 import Footer from "./ui/Footer";
 import Manager from "./ui/Manager";
 import Picker from "./ui/Picker";
@@ -8,7 +9,16 @@ import Week from "./ui/Week";
 
 const storageKey = "tvSpyShows";
 
-function App() {
+type MainPageProps = {
+  byid?: string;
+  bytitle?: string;
+};
+
+const MainPage = () => {
+  let [searchParams, setSearchParams] = useSearchParams();
+  const byid = searchParams.get("byid");
+  const bytitle = searchParams.get("bytitle");
+
   const [shows, setShows] = useState<ScheduledShow[]>([]);
   const [favorites, setFavorites] = useState<number[]>(() => {
     const savedFavorites = localStorage.getItem(storageKey);
@@ -24,15 +34,26 @@ function App() {
   }, [favorites]);
 
   useEffect(() => {
-    favorites.forEach((show) => {
-      getShowById(show).then((res) => {
-        setShows((prev) =>
-          [...prev.filter((s) => s.id !== res.id), res].sort(
-            (a, b) => a.id - b.id
-          )
-        );
-      });
-    });
+    const fetchShows = async () => {
+      let showData = await Promise.all(
+        favorites.map(async (favorite) => getShowById(favorite))
+      );
+
+      if (byid) {
+        console.log("asdfasdf");
+        showData.push(await getShowById(Number(byid)));
+      }
+
+      if (bytitle) {
+        const shows = await searchShows(bytitle);
+        if (shows.length > 0) {
+          showData.push(await getShowById(shows[0].show.id));
+        }
+      }
+
+      setShows(showData.sort((a, b) => a.id - b.id));
+    };
+    fetchShows();
   }, [favorites, setShows]);
 
   return (
@@ -75,6 +96,14 @@ function App() {
       />
       <Footer />
     </div>
+  );
+};
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+    </Routes>
   );
 }
 

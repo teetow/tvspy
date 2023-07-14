@@ -1,11 +1,21 @@
-import { compareDesc, isWithinInterval, parseISO } from "date-fns";
+import {
+  addSeconds,
+  compareDesc,
+  isWithinInterval,
+  parseISO,
+  startOfDay,
+} from "date-fns";
 
 const apiUrl = "https://api.tvmaze.com";
 
 type ShowStatus = "Running" | "In Development" | "Ended" | "To Be Determined";
 
 type Show = {
-  _links: { self: { href: string }; previousepisode: { href: string } };
+  _links: {
+    self: { href: string };
+    nextepisode: { href: string };
+    previousepisode: { href: string };
+  };
   dvdCountry: any; // null
   ended: string; // null
   externals: { [key: string]: string }; // {tvrage: null, thetvdb: 328711, imdb: 'tt5171438'}
@@ -140,7 +150,7 @@ const parseShow = async (show: Show) => {
 
   const currentSeason = seasons.find((s) => {
     return s.premiereDate && s.endDate
-      ? isWithinInterval(Date.now(), {
+      ? isWithinInterval(addSeconds(startOfDay(new Date()), 1), {
           start: parseISO(s.premiereDate),
           end: parseISO(s.endDate),
         })
@@ -181,15 +191,26 @@ const parseShow = async (show: Show) => {
     ? ((await fetchJson<Ep>(show._links.previousepisode?.href)) as Ep)
     : undefined;
 
-  let nextEp;
+  let nextEp = show?._links?.nextepisode?.href
+    ? ((await fetchJson<Ep>(show._links.nextepisode?.href)) as Ep)
+    : undefined;
 
-  if (currentSeason && prevEp) {
-    let season = currentSeason ? currentSeason : nextSeason;
-    nextEp = await fetchJson<Ep>(
-      `${apiUrl}/shows/${show.id}/episodebynumber?season=${
-        season?.number
-      }&number=${prevEp.number + 1}&currentSeason`
-    );
+  if (currentSeason) {
+    let season = currentSeason;
+    if (prevEp && prevEp.season === currentSeason.number) {
+      nextEp = await fetchJson<Ep>(
+        `${apiUrl}/shows/${show.id}/episodebynumber?season=${
+          season?.number
+        }&number=${prevEp.number + 1}&currentSeason`
+      );
+    } else {
+      // we're at the start of a new season
+      nextEp = await fetchJson<Ep>(
+        `${apiUrl}/shows/${show.id}/episodebynumber?season=${
+          season?.number
+        }&number=${2}&currentSeason`
+      );
+    }
   } else if (nextSeason) {
     nextEp = await fetchJson<Ep>(
       `${apiUrl}/shows/${show.id}/episodebynumber?season=${nextSeason?.number}&number=1&nextSeason`
