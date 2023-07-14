@@ -1,3 +1,7 @@
+export const isNumericString = (n: string) => {
+  return !isNaN(Number(n));
+};
+
 export const range = (n: number, start: number = 0) => [
   ...Array.from(Array(n).keys()).map((k) => k + start),
 ];

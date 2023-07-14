@@ -10,7 +10,7 @@ type Props = {
 const Schedule = ({ shows }: Props) => {
   return (
     <div className="ts-schedule">
-      <Week showEvents={shows} />
+      <Week scheduledEpisodes={shows} />
     </div>
   );
 };

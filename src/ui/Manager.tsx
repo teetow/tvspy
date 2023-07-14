@@ -134,11 +134,21 @@ const getShowComment = (show: ScheduledShow) => {
 };
 
 type Props = {
-  shows: ScheduledShow[];
+  showIds: number[];
   onRemoveShow: (id: number) => void;
 };
 
-const Manager: FunctionComponent<Props> = ({ shows, onRemoveShow }) => {
+const Manager: FunctionComponent<Props> = ({ showIds, onRemoveShow }) => {
+  const [shows, setShows] = useState<ScheduledShow[]>();
+  useEffect(() => {
+    const fetchShows = async () => {
+      const showData = await Promise.all(
+        showIds.map((showId) => getShowById(showId))
+      );
+      setShows(showData);
+    };
+  }, [showIds]);
+
   const [selectedShowId, setSelectedShowId] = useState<number>();
   const [showData, setShowData] = useState<ScheduledShow>();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -148,7 +158,8 @@ const Manager: FunctionComponent<Props> = ({ shows, onRemoveShow }) => {
   useEffect(() => {
     if (
       selectedShowId === undefined ||
-      shows.find((s) => s.id === selectedShowId) === undefined
+      (shows !== undefined &&
+        shows.find((s) => s.id === selectedShowId) === undefined)
     ) {
       setShowData(undefined);
       return;
@@ -177,7 +188,7 @@ const Manager: FunctionComponent<Props> = ({ shows, onRemoveShow }) => {
     >
       {showData && <ShowDetails show={showData} />}
       <ul className="ts-manager__showlist [grid-area:list] [align-self:start]">
-        {shows.map((show) => (
+        {shows && shows.map((show) => (
           <li
             key={show.id}
             className={classNames(

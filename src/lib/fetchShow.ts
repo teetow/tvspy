@@ -5,6 +5,7 @@ import {
   parseISO,
   startOfDay,
 } from "date-fns";
+import { getSeasonsByShowId } from "./show";
 
 const apiUrl = "https://api.tvmaze.com";
 
@@ -141,9 +142,7 @@ const parseShow = async (show: Show) => {
     status: show.status,
   } as ScheduledShow;
 
-  const seasons = (await fetchJson<Season[]>(
-    `${apiUrl}/shows/${show.id}/seasons`
-  )) as Season[];
+  const seasons = await getSeasonsByShowId(show.id);
 
   let prevSeason: Season | undefined = undefined;
   let nextSeason: Season | undefined = undefined;
@@ -238,5 +237,9 @@ export const getShowById = async (id: number) => {
   const showData = (await fetchJson<Show>(
     `${apiUrl}/shows/${id}`
   )) as Promise<Show>;
-  return parseShow(await showData);
+  return await parseShow(await showData);
+};
+
+export const getSeasonEpisodes = async (id: number) => {
+  return await fetchJson<Season>(`${apiUrl}/seasons/${id}/episodes`);
 };
